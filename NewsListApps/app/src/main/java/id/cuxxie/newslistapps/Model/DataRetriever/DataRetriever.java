@@ -64,12 +64,23 @@ public class DataRetriever implements Callback  {
         call.enqueue(this);
     }
 
-    public void getAllSources(String language, String category, DataRetrieverInterface dataRetrieverHandler)
+    public String cleanCategoryToMatchServerRequirement(String category)
     {
-        HttpUrl url = new HttpUrl.Builder().scheme("https").host(BASE_URL).addEncodedPathSegment("v1")
-                .addEncodedPathSegment(SOURCE_PATH)
-                .addQueryParameter("language",language)
-                .build();
+        if(category != null){
+            if(!category.equals("All"))
+                return category.replace(' ','-');
+        }
+        return null;
+    }
+
+    public void getAllSources(String category, DataRetrieverInterface dataRetrieverHandler)
+    {
+        category = cleanCategoryToMatchServerRequirement(category);
+        HttpUrl.Builder builder = new HttpUrl.Builder().scheme("https").host(BASE_URL)
+                .addEncodedPathSegment("v1").addEncodedPathSegment(SOURCE_PATH);
+        if(category != null)
+            builder.addQueryParameter("category",category);
+        HttpUrl url = builder.build();
         callURLGet(url,dataRetrieverHandler);
     }
 
@@ -94,5 +105,17 @@ public class DataRetriever implements Callback  {
            callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.ARTICLE);
        else
            callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.SOURCE);
+    }
+
+    public void cancelAPICall(int tag)
+    {
+        for(Call call : okHttpClient.dispatcher().queuedCalls()) {
+            if(call.request().tag().equals(tag))
+                call.cancel();
+        }
+        for(Call call : okHttpClient.dispatcher().runningCalls()) {
+            if(call.request().tag().equals(tag))
+                call.cancel();
+        }
     }
 }
