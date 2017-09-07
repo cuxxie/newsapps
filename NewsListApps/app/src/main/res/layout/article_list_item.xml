@@ -26,8 +26,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/list_item_article_image"
-                android:background="@color/fullyTransparent"
+                android:background="@color/blueTransparent"
                 android:textAppearance="?android:textAppearanceLargeInverse"
+                />
+            <TextView
+                android:gravity="center_horizontal|bottom"
+                android:id="@+id/list_item_article_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/list_item_article_title"
+                android:background="@color/blueTransparent"
+                android:textAppearance="?android:textAppearanceSmallInverse"
                 />
             <!--<Button-->
                 <!--android:id="@+id/instruction_button"-->
