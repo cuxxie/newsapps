@@ -13,6 +13,6 @@ import id.cuxxie.newslistapps.Model.DataModel.Source;
  */
 
 public interface DataRetrieverClientListener {
-    public void onSuccess(ArrayList<ModelWrapper> model);
-    public void onFailed();
+    void onSuccess(ArrayList<ModelWrapper> model);
+    void onFailed();
 }

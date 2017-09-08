@@ -9,7 +9,7 @@ import id.cuxxie.newslistapps.Model.DataModel.ModelWrapper;
  */
 
 public interface DataRetrieverInterface {
-    public void onDataRetrieveFailed(Exception ex);
-    public void onDataRetrieveSucceed(String rawResult, ModelWrapper.ModelType modelType);
-    public int getCallerHash();
+    void onDataRetrieveFailed(Exception ex);
+    void onDataRetrieveSucceed(String rawResult, ModelWrapper.ModelType modelType);
+    int getCallerHash();
 }

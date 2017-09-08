@@ -1,10 +1,9 @@
 package id.cuxxie.newslistapps.Model.DataRetriever;
-
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.concurrent.TimeUnit;
 
 import id.cuxxie.newslistapps.Model.DataModel.ModelWrapper;
@@ -64,16 +63,27 @@ public class DataRetriever implements Callback  {
         call.enqueue(this);
     }
 
-    public void getAllSources(String language, String category, DataRetrieverInterface dataRetrieverHandler)
+    private String cleanCategoryToMatchServerRequirement(String category)
     {
-        HttpUrl url = new HttpUrl.Builder().scheme("https").host(BASE_URL).addEncodedPathSegment("v1")
-                .addEncodedPathSegment(SOURCE_PATH)
-                .addQueryParameter("language",language)
-                .build();
+        if(category != null){
+            if(!category.equals("All"))
+                return category.replace(' ','-');
+        }
+        return null;
+    }
+
+    public void getAllSources(String category, DataRetrieverInterface dataRetrieverHandler)
+    {
+        category = cleanCategoryToMatchServerRequirement(category);
+        HttpUrl.Builder builder = new HttpUrl.Builder().scheme("https").host(BASE_URL)
+                .addEncodedPathSegment("v1").addEncodedPathSegment(SOURCE_PATH);
+        if(category != null)
+            builder.addQueryParameter("category",category);
+        HttpUrl url = builder.build();
         callURLGet(url,dataRetrieverHandler);
     }
 
-    public void getAllArticles(String sourceId, String sortBy, DataRetrieverInterface dataRetrieverHandler)
+    public void getAllArticles(String sourceId, DataRetrieverInterface dataRetrieverHandler)
     {
         HttpUrl url = new HttpUrl.Builder().scheme("https").host(BASE_URL).addEncodedPathSegment("v1")
                 .addEncodedPathSegment(ARTICLE_PATH)
@@ -84,15 +94,38 @@ public class DataRetriever implements Callback  {
     }
 
     @Override
-    public void onFailure(Call call, IOException e) {
-        callerHandler.onDataRetrieveFailed(e);
+    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+        if(!e.getMessage().toLowerCase().contains("canceled") && !e.getMessage().toLowerCase().contains("socket closed")) {
+            callerHandler.onDataRetrieveFailed(e);
+        }
     }
 
     @Override
-    public void onResponse(Call call, Response response) throws IOException {
+    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+        String responseString = "";
+        try {
+            responseString = response.body().string();
+        }
+        catch (NullPointerException ex)
+        {
+            ex.printStackTrace();
+        }
+
        if(call.request().url().encodedPathSegments().contains(ARTICLE_PATH))
-           callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.ARTICLE);
+           callerHandler.onDataRetrieveSucceed(responseString, ModelWrapper.ModelType.ARTICLE);
        else
-           callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.SOURCE);
+           callerHandler.onDataRetrieveSucceed(responseString, ModelWrapper.ModelType.SOURCE);
+    }
+
+    public void cancelAPICall(int tag)
+    {
+        for(Call call : okHttpClient.dispatcher().queuedCalls()) {
+            if(call.request().tag().equals(tag))
+                call.cancel();
+        }
+        for(Call call : okHttpClient.dispatcher().runningCalls()) {
+            if(call.request().tag().equals(tag))
+                call.cancel();
+        }
     }
 }

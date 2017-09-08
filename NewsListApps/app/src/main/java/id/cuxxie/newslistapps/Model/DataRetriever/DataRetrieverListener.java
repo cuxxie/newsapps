@@ -14,7 +14,7 @@ import id.cuxxie.newslistapps.Presenter.ClientListener.DataRetrieverClientListen
  */
 
 public class DataRetrieverListener implements DataRetrieverInterface {
-    public int callerHashCode;
+    private int callerHashCode;
     private DataRetrieverClientListener clientListener;
     public DataRetrieverListener(int hashCode, DataRetrieverClientListener clientListener) {
         this.callerHashCode = hashCode;
@@ -38,11 +38,18 @@ public class DataRetrieverListener implements DataRetrieverInterface {
         {
             jsonArray = JSONConverterUtility.getJsonArrayWithObject(json,"sources");
         }
-        clientListener.onSuccess(JSONConverterUtility.convertJsonArrayToModelWrapper(jsonArray,modelType));
+        if(clientListener != null)
+            clientListener.onSuccess(JSONConverterUtility.convertJsonArrayToModelWrapper(jsonArray,modelType));
     }
 
     @Override
     public int getCallerHash() {
         return callerHashCode;
+    }
+
+    public void cancelAllCall()
+    {
+        DataRetriever.getInstance().cancelAPICall(callerHashCode);
+        clientListener = null;
     }
 }
