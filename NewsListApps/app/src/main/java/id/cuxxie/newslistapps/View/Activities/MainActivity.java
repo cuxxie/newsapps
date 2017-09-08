@@ -16,15 +16,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.cuxxie.newslistapps.Model.DataModel.Source;
+import id.cuxxie.newslistapps.Model.Utility.Key;
 import id.cuxxie.newslistapps.Presenter.Contract.MainActivityPresenterClientContract;
 import id.cuxxie.newslistapps.Presenter.MainActivityPresenter;
 import id.cuxxie.newslistapps.R;
 import id.cuxxie.newslistapps.Presenter.Adapter.SourcesAdapter;
 
 public class MainActivity extends AppCompatActivity implements MainActivityPresenterClientContract, SourcesAdapter.SourcesAdapterOnItemClickListener{
-
-    private static String categoryStateKey = "category";
-    private static String sourcesStateKey = "sources";
     @BindView(R.id.main_activity_category) Spinner category;
     @BindView(R.id.main_activity_recycle_view) RecyclerView recyclerView;
     @BindView(R.id.progress_container) LinearLayout progressContainer;
@@ -50,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         });
         ArrayList<Source> sources = new ArrayList<>();
 
-        if(savedInstanceState!= null && savedInstanceState.containsKey(categoryStateKey)) {
-            presenter.setSelectedCategory(savedInstanceState.getString(categoryStateKey));
+        if(savedInstanceState!= null && savedInstanceState.containsKey(Key.CATEGORY.toString())) {
+            presenter.setSelectedCategory(savedInstanceState.getString(Key.CATEGORY.toString()));
         }
 
-        if(savedInstanceState != null && savedInstanceState.containsKey(sourcesStateKey))
-            sources = savedInstanceState.getParcelableArrayList(sourcesStateKey);
+        if(savedInstanceState != null && savedInstanceState.containsKey(Key.SOURCES.toString()))
+            sources = savedInstanceState.getParcelableArrayList(Key.SOURCES.toString());
         else {
             presenter.loadSourcesData(null);
             showLoading();
@@ -74,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(sourcesStateKey,adapter.getSources());
-        outState.putString(categoryStateKey,presenter.getSelectedCategory());
+        outState.putParcelableArrayList(Key.SOURCES.toString(),adapter.getSources());
+        outState.putString(Key.CATEGORY.toString(),presenter.getSelectedCategory());
         super.onSaveInstanceState(outState);
     }
 
@@ -90,16 +88,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         });
     }
 
-    public void spinnerChangeValue(String value)
-    {
-        presenter.loadSourcesData(value);
-    }
-
-
-
     @Override
-    public void showLoading()
-    {
+    public void showLoading() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -110,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     }
 
     @Override
-    public void hideLoading()
-    {
+    public void hideLoading() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -124,5 +113,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     protected void onStop() {
         presenter.cancelAllCall();
         super.onStop();
+    }
+
+
+    public void spinnerChangeValue(String value)
+    {
+        presenter.loadSourcesData(value);
     }
 }

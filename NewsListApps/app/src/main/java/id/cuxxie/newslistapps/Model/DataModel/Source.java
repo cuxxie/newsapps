@@ -12,13 +12,13 @@ import java.util.ArrayList;
  */
 @JsonIgnoreProperties({ "urlsToLogos","sortBysAvailable"})
 public class Source implements Parcelable {
-    String id;
-    String name;
-    String description;
-    String category;
-    String language;
-    String country;
-    String url;
+    private String id;
+    private String name;
+    private String description;
+    private String category;
+    private String language;
+    private String country;
+    private String url;
 
     public Source() {
     }

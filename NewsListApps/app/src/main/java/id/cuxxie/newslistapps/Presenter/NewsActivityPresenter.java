@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 import id.cuxxie.newslistapps.Model.DataModel.Article;
 import id.cuxxie.newslistapps.Model.DataModel.ModelWrapper;
-import id.cuxxie.newslistapps.Model.DataModel.Source;
 import id.cuxxie.newslistapps.Model.DataRetriever.DataRetriever;
 import id.cuxxie.newslistapps.Model.DataRetriever.DataRetrieverListener;
+import id.cuxxie.newslistapps.Model.Utility.ModelConverterUtility;
 import id.cuxxie.newslistapps.Presenter.ClientListener.DataRetrieverClientListener;
 import id.cuxxie.newslistapps.Presenter.Contract.NewsActivityPresenterContract;
 
@@ -28,14 +28,7 @@ public class NewsActivityPresenter implements DataRetrieverClientListener {
 
     @Override
     public void onSuccess(ArrayList<ModelWrapper> model) {
-        ArrayList<Article> articles = new ArrayList<>();
-        for(ModelWrapper item : model)
-        {
-            Article article = item.getArticle();
-            if(article != null){
-                articles.add(article);
-            }
-        }
+        ArrayList<Article> articles = ModelConverterUtility.convertModelWrapperListToArticle(model);
         activity.updateAdapterWithNewData(articles);
     }
 

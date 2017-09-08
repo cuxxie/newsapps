@@ -9,5 +9,5 @@ import id.cuxxie.newslistapps.Model.DataModel.Article;
  */
 
 public interface NewsActivityPresenterContract {
-    public void updateAdapterWithNewData(ArrayList<Article> articles);
+    void updateAdapterWithNewData(ArrayList<Article> articles);
 }

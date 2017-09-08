@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.cuxxie.newslistapps.Model.DataModel.Article;
 import id.cuxxie.newslistapps.Model.DataModel.Source;
+import id.cuxxie.newslistapps.Model.Utility.Key;
 import id.cuxxie.newslistapps.Presenter.Contract.NewsActivityPresenterContract;
 import id.cuxxie.newslistapps.Presenter.NewsActivityPresenter;
 import id.cuxxie.newslistapps.R;
@@ -26,7 +27,6 @@ import id.cuxxie.newslistapps.Presenter.Adapter.NewsAdapter;
 import id.cuxxie.newslistapps.Presenter.Adapter.SourcesAdapter;
 
 public class NewsActivity extends AppCompatActivity implements NewsActivityPresenterContract, NewsAdapter.NewsAdapterOnItemClickListener {
-    private static String articlesStateKey = "articles";
     @BindView(R.id.news_activity_recycle_view) RecyclerView recyclerView;
     @BindView(R.id.news_search) EditText search;
     NewsAdapter adapter;
@@ -41,12 +41,12 @@ public class NewsActivity extends AppCompatActivity implements NewsActivityPrese
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(getIntent().hasExtra("source"))
-            source = getIntent().getParcelableExtra("source");
+        if(getIntent().hasExtra(Key.SOURCE.toString()))
+            source = getIntent().getParcelableExtra(Key.SOURCE.toString());
 
         ArrayList<Article> articles = new ArrayList<>();
-        if(savedInstanceState!=null && savedInstanceState.containsKey(articlesStateKey))
-            articles = savedInstanceState.getParcelableArrayList(articlesStateKey);
+        if(savedInstanceState!=null && savedInstanceState.containsKey(Key.ARTICLES.toString()))
+            articles = savedInstanceState.getParcelableArrayList(Key.ARTICLES.toString());
         else
             presenter.loadArticleData(source.getId());
 
@@ -57,12 +57,10 @@ public class NewsActivity extends AppCompatActivity implements NewsActivityPrese
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -83,19 +81,14 @@ public class NewsActivity extends AppCompatActivity implements NewsActivityPrese
     @Override
     public void onItemClicked(Article article) {
         Intent intent = new Intent(getBaseContext(),ReadNewsActivity.class);
-        intent.putExtra("article",article);
+        intent.putExtra(Key.ARTICLE.toString(),article);
         startActivity(intent);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(articlesStateKey,adapter.getArticles());
+        outState.putParcelableArrayList(Key.ARTICLES.toString(),adapter.getArticles());
         super.onSaveInstanceState(outState);
-    }
-
-    public void searchForText(String searchVal)
-    {
-        adapter.searchText(searchVal);
     }
 
     @Override
@@ -114,8 +107,12 @@ public class NewsActivity extends AppCompatActivity implements NewsActivityPrese
         notifyUpdateData();
     }
 
-    public void notifyUpdateData()
+    public void searchForText(String searchVal)
     {
+        adapter.searchText(searchVal);
+    }
+
+    public void notifyUpdateData() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -124,8 +121,7 @@ public class NewsActivity extends AppCompatActivity implements NewsActivityPrese
         });
     }
 
-    public void clearSearch()
-    {
+    public void clearSearch() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -11,9 +11,9 @@ public class ModelWrapper {
         ARTICLE,
         SOURCE
     }
-    Article article;
-    Source source;
-    ModelType type;
+    private Article article;
+    private Source source;
+    private ModelType type;
 
     public ModelWrapper(Article article) {
         this.article = article;

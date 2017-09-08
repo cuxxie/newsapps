@@ -126,7 +126,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>  {
 
 
     public interface NewsAdapterOnItemClickListener{
-        public void onItemClicked(Article article);
-        public void onFinishedSearch();
+        void onItemClicked(Article article);
+        void onFinishedSearch();
     }
 }

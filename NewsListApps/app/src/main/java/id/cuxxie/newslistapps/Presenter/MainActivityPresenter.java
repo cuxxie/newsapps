@@ -6,6 +6,7 @@ import id.cuxxie.newslistapps.Model.DataModel.ModelWrapper;
 import id.cuxxie.newslistapps.Model.DataModel.Source;
 import id.cuxxie.newslistapps.Model.DataRetriever.DataRetriever;
 import id.cuxxie.newslistapps.Model.DataRetriever.DataRetrieverListener;
+import id.cuxxie.newslistapps.Model.Utility.ModelConverterUtility;
 import id.cuxxie.newslistapps.Presenter.ClientListener.DataRetrieverClientListener;
 import id.cuxxie.newslistapps.Presenter.Contract.MainActivityPresenterClientContract;
 
@@ -42,14 +43,7 @@ public class MainActivityPresenter implements DataRetrieverClientListener {
 
     @Override
     public void onSuccess(ArrayList<ModelWrapper> model) {
-        ArrayList<Source> sources = new ArrayList<>();
-        for(ModelWrapper item : model)
-        {
-            Source source = item.getSource();
-            if(source != null){
-                sources.add(source);
-            }
-        }
+        ArrayList<Source> sources = ModelConverterUtility.convertModelWrapperListToSources(model);
         activity.hideLoading();
         activity.updateAdapterWithNewData(sources);
     }

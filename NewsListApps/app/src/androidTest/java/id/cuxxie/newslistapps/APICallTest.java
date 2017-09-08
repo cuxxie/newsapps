@@ -43,7 +43,7 @@ public class APICallTest implements DataRetrieverClientListener {
         signal = new CountDownLatch(1);
         Context appContext = InstrumentationRegistry.getTargetContext();
         drl = new DataRetrieverListener(this.hashCode(),this);
-        DataRetriever.getInstance().getAllSources("en",drl);
+        DataRetriever.getInstance().getAllSources("gaming",drl);
         try {
             signal.await();
         } catch (InterruptedException e) {

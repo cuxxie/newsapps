@@ -14,7 +14,7 @@ import id.cuxxie.newslistapps.Presenter.ClientListener.DataRetrieverClientListen
  */
 
 public class DataRetrieverListener implements DataRetrieverInterface {
-    public int callerHashCode;
+    private int callerHashCode;
     private DataRetrieverClientListener clientListener;
     public DataRetrieverListener(int hashCode, DataRetrieverClientListener clientListener) {
         this.callerHashCode = hashCode;

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.cuxxie.newslistapps.Model.DataModel.Article;
+import id.cuxxie.newslistapps.Model.Utility.Key;
 import id.cuxxie.newslistapps.Presenter.Contract.ReadNewsActivityPresenterContract;
 import id.cuxxie.newslistapps.R;
 
@@ -27,10 +28,9 @@ public class ReadNewsActivity extends AppCompatActivity implements ReadNewsActiv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_news);
         ButterKnife.bind(this);
-        if (getIntent().hasExtra("article"))
-            article = getIntent().getParcelableExtra("article");
+        if (getIntent().hasExtra(Key.ARTICLE.toString()))
+            article = getIntent().getParcelableExtra(Key.ARTICLE.toString());
 
-        //setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.read_news_title);
 
@@ -39,20 +39,6 @@ public class ReadNewsActivity extends AppCompatActivity implements ReadNewsActiv
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         activity = this;
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-               // super.onReceivedError(view, request, error);
-                //Toast.makeText(activity, error.getDescription(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
-                //super.onReceivedError(view, errorCode, description, failingUrl);
-            }
-        });
-
         webView.loadUrl(article.getUrl());
     }
 

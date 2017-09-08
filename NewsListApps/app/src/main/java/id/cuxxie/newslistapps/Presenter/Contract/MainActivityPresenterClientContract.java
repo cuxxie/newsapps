@@ -9,7 +9,7 @@ import id.cuxxie.newslistapps.Model.DataModel.Source;
  */
 
 public interface MainActivityPresenterClientContract {
-    public void updateAdapterWithNewData(ArrayList<Source> sources);
-    public void showLoading();
-    public void hideLoading();
+    void updateAdapterWithNewData(ArrayList<Source> sources);
+    void showLoading();
+    void hideLoading();
 }

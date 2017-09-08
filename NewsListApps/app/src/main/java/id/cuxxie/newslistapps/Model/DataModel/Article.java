@@ -11,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class Article implements Parcelable {
 
-    String author;
-    String description;
-    String title;
-    String url;
-    String urlToImage;
-    String publishedAt;
+    private String author;
+    private String description;
+    private String title;
+    private String url;
+    private String urlToImage;
+    private String publishedAt;
 
     public Article(Parcel in) {
         this.author = in.readString();

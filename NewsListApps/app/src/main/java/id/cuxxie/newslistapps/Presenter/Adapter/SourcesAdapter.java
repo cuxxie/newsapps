@@ -22,7 +22,6 @@ public class SourcesAdapter extends RecyclerView.Adapter<SourcesAdapter.ViewHold
     ArrayList<Source> sources;
     SourcesAdapterOnItemClickListener listener;
     static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         @BindView(R.id.list_item_source_name) TextView name;
         @BindView(R.id.list_item_source_desc) TextView desc;
         @BindView(R.id.list_item_source_url) TextView url;
@@ -81,6 +80,6 @@ public class SourcesAdapter extends RecyclerView.Adapter<SourcesAdapter.ViewHold
     }
 
     public interface SourcesAdapterOnItemClickListener{
-        public void onItemClicked(Source source);
+        void onItemClicked(Source source);
     }
 }

@@ -1,10 +1,9 @@
 package id.cuxxie.newslistapps.Model.DataRetriever;
-
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.concurrent.TimeUnit;
 
 import id.cuxxie.newslistapps.Model.DataModel.ModelWrapper;
@@ -64,7 +63,7 @@ public class DataRetriever implements Callback  {
         call.enqueue(this);
     }
 
-    public String cleanCategoryToMatchServerRequirement(String category)
+    private String cleanCategoryToMatchServerRequirement(String category)
     {
         if(category != null){
             if(!category.equals("All"))
@@ -95,18 +94,27 @@ public class DataRetriever implements Callback  {
     }
 
     @Override
-    public void onFailure(Call call, IOException e) {
+    public void onFailure(@NonNull Call call, @NonNull IOException e) {
         if(!e.getMessage().toLowerCase().contains("canceled") && !e.getMessage().toLowerCase().contains("socket closed")) {
             callerHandler.onDataRetrieveFailed(e);
         }
     }
 
     @Override
-    public void onResponse(Call call, Response response) throws IOException {
+    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+        String responseString = "";
+        try {
+            responseString = response.body().string();
+        }
+        catch (NullPointerException ex)
+        {
+            ex.printStackTrace();
+        }
+
        if(call.request().url().encodedPathSegments().contains(ARTICLE_PATH))
-           callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.ARTICLE);
+           callerHandler.onDataRetrieveSucceed(responseString, ModelWrapper.ModelType.ARTICLE);
        else
-           callerHandler.onDataRetrieveSucceed(response.body().string(), ModelWrapper.ModelType.SOURCE);
+           callerHandler.onDataRetrieveSucceed(responseString, ModelWrapper.ModelType.SOURCE);
     }
 
     public void cancelAPICall(int tag)
