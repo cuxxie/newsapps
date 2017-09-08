@@ -1,13 +1,14 @@
 package id.cuxxie.newslistapps.View.Activities;
 
 import android.content.Intent;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import id.cuxxie.newslistapps.Model.DataModel.Source;
 import id.cuxxie.newslistapps.Presenter.Contract.MainActivityPresenterClientContract;
 import id.cuxxie.newslistapps.Presenter.MainActivityPresenter;
 import id.cuxxie.newslistapps.R;
-import id.cuxxie.newslistapps.View.Adapter.SourcesAdapter;
+import id.cuxxie.newslistapps.Presenter.Adapter.SourcesAdapter;
 
 public class MainActivity extends AppCompatActivity implements MainActivityPresenterClientContract, SourcesAdapter.SourcesAdapterOnItemClickListener{
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     private static String sourcesStateKey = "sources";
     @BindView(R.id.main_activity_category) Spinner category;
     @BindView(R.id.main_activity_recycle_view) RecyclerView recyclerView;
+    @BindView(R.id.progress_container) LinearLayout progressContainer;
     SourcesAdapter adapter;
     MainActivityPresenter presenter;
     @Override
@@ -54,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
         if(savedInstanceState != null && savedInstanceState.containsKey(sourcesStateKey))
             sources = savedInstanceState.getParcelableArrayList(sourcesStateKey);
-        else
+        else {
             presenter.loadSourcesData(null);
+            showLoading();
+        }
         adapter = new SourcesAdapter(sources,this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -91,4 +95,34 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         presenter.loadSourcesData(value);
     }
 
+
+
+    @Override
+    public void showLoading()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressContainer.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
+    @Override
+    public void hideLoading()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressContainer.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        presenter.cancelAllCall();
+        super.onStop();
+    }
 }

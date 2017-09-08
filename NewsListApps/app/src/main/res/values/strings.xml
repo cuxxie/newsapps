@@ -2,6 +2,7 @@
     <string name="app_name">NewsListApps</string>
     <string name="category_prompt">Choose Category</string>
     <string name="sort_by_prompt">Sort By</string>
+    <string name="read_news_title">Read News</string>
     <string-array name="category_arrays">
         <item>All</item>
         <item>Business</item>

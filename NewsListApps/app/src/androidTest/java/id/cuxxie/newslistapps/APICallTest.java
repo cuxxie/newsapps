@@ -43,7 +43,7 @@ public class APICallTest implements DataRetrieverClientListener {
         signal = new CountDownLatch(1);
         Context appContext = InstrumentationRegistry.getTargetContext();
         drl = new DataRetrieverListener(this.hashCode(),this);
-        DataRetriever.getInstance().getAllSources("en",new ArrayList<String>(),drl);
+        DataRetriever.getInstance().getAllSources("en",drl);
         try {
             signal.await();
         } catch (InterruptedException e) {
@@ -58,7 +58,7 @@ public class APICallTest implements DataRetrieverClientListener {
         signal = new CountDownLatch(1);
         Context appContext = InstrumentationRegistry.getTargetContext();
         drl = new DataRetrieverListener(this.hashCode(),this);
-        DataRetriever.getInstance().getAllArticles("the-next-web","top",drl);
+        DataRetriever.getInstance().getAllArticles("the-next-web",drl);
         try {
             signal.await();
         } catch (InterruptedException e) {

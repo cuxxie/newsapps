@@ -24,6 +24,7 @@ public class MainActivityPresenter implements DataRetrieverClientListener {
     public void loadSourcesData(String category)
     {
         if(selectedCategory == null || !selectedCategory.equals(category)) {
+            activity.showLoading();
             selectedCategory = category;
             cancelAllCall();
             drl = new DataRetrieverListener(this.hashCode(), this);
@@ -49,12 +50,13 @@ public class MainActivityPresenter implements DataRetrieverClientListener {
                 sources.add(source);
             }
         }
+        activity.hideLoading();
         activity.updateAdapterWithNewData(sources);
     }
 
     @Override
     public void onFailed() {
-
+        activity.hideLoading();
     }
 
     public void cancelAllCall()

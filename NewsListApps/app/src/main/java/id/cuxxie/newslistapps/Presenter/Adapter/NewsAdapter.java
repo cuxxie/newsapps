@@ -1,22 +1,23 @@
-package id.cuxxie.newslistapps.View.Adapter;
+package id.cuxxie.newslistapps.Presenter.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.cuxxie.newslistapps.Model.DataModel.Article;
-import id.cuxxie.newslistapps.Model.DataModel.Source;
 import id.cuxxie.newslistapps.R;
 
 /**
@@ -24,17 +25,20 @@ import id.cuxxie.newslistapps.R;
  */
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>  {
+    ArrayList<Article> displayedArticles;
     ArrayList<Article> articles;
     Context mContext;
     NewsAdapterOnItemClickListener listener;
+    String filterText = "";
     static class ViewHolder extends RecyclerView.ViewHolder {
         Context mContext;
         @BindView(R.id.list_item_article_image) ImageView imageView;
         @BindView(R.id.list_item_article_title) TextView title;
         @BindView(R.id.list_item_article_desc) TextView desc;
-        public ViewHolder(View v) {
+        public ViewHolder(View v,Context context) {
             super(v);
             ButterKnife.bind(this,v);
+            this.mContext = context;
         }
 
         public void bind(Article article)
@@ -49,12 +53,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>  {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.article_list_item, parent, false);
-        return new NewsAdapter.ViewHolder(v);
+        return new NewsAdapter.ViewHolder(v,mContext);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(articles.get(position));
+        holder.bind(displayedArticles.get(position));
         final int index = holder.getAdapterPosition();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,13 +70,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>  {
 
     @Override
     public int getItemCount() {
-        return articles.size();
+        return displayedArticles.size();
     }
 
-    public NewsAdapter(ArrayList<Article> articles, Context mContext, NewsAdapterOnItemClickListener listener) {
+    public NewsAdapter(ArrayList<Article> articles, Context mContext, NewsAdapterOnItemClickListener listener, String filterText) {
         this.articles = articles;
+        this.displayedArticles = new ArrayList<>(articles);
         this.mContext = mContext;
         this.listener = listener;
+        this.filterText = filterText;
     }
 
     public ArrayList<Article> getArticles() {
@@ -81,13 +87,46 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>  {
 
     public void setArticles(ArrayList<Article> articles) {
         this.articles = articles;
+        this.displayedArticles = new ArrayList<>(articles);
+        searchText(filterText);
     }
 
     public void sourceClickedAt(int index){
         listener.onItemClicked(articles.get(index));
     }
 
+
+    public String getFilterText() {
+        return filterText;
+    }
+
+    public void setFilterText(String filterText) {
+        this.filterText = filterText;
+    }
+
+    public void searchText(String search)
+    {
+        filterText = search;
+        if(filterText.length() > 0)
+        {
+            displayedArticles = new ArrayList<>(articles);
+            ArrayList<Article> removeList = new ArrayList<>();
+            for(Article item: displayedArticles){
+                if(item.getTitle().toLowerCase().contains(filterText.toLowerCase()))
+                {}
+                else
+                    removeList.add(item);
+            }
+            for(Article item: removeList)
+                displayedArticles.remove(item);
+
+            listener.onFinishedSearch();
+        }
+    }
+
+
     public interface NewsAdapterOnItemClickListener{
         public void onItemClicked(Article article);
+        public void onFinishedSearch();
     }
 }

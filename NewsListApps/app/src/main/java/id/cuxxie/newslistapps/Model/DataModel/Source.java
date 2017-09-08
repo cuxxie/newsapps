@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by hendr on 9/6/2017.
  */
-@JsonIgnoreProperties({ "urlsToLogos"})
+@JsonIgnoreProperties({ "urlsToLogos","sortBysAvailable"})
 public class Source implements Parcelable {
     String id;
     String name;
@@ -19,7 +19,6 @@ public class Source implements Parcelable {
     String language;
     String country;
     String url;
-    ArrayList<String> sortBysAvailable;
 
     public Source() {
     }
@@ -32,7 +31,6 @@ public class Source implements Parcelable {
         this.language = in.readString();
         this.country = in.readString();
         this.url = in.readString();
-        in.readStringList(this.sortBysAvailable);
     }
 
     @Override
@@ -49,7 +47,6 @@ public class Source implements Parcelable {
         dest.writeString(this.language);
         dest.writeString(this.country);
         dest.writeString(this.url);
-        dest.writeStringList(this.sortBysAvailable);
     }
 
     public static final Creator CREATOR
@@ -120,11 +117,4 @@ public class Source implements Parcelable {
         this.url = url;
     }
 
-    public ArrayList<String> getSortBysAvailable() {
-        return sortBysAvailable;
-    }
-
-    public void setSortBysAvailable(ArrayList<String> sortBysAvailable) {
-        this.sortBysAvailable = sortBysAvailable;
-    }
 }

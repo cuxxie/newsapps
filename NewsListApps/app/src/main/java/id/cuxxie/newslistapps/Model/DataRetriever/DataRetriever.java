@@ -84,7 +84,7 @@ public class DataRetriever implements Callback  {
         callURLGet(url,dataRetrieverHandler);
     }
 
-    public void getAllArticles(String sourceId, String sortBy, DataRetrieverInterface dataRetrieverHandler)
+    public void getAllArticles(String sourceId, DataRetrieverInterface dataRetrieverHandler)
     {
         HttpUrl url = new HttpUrl.Builder().scheme("https").host(BASE_URL).addEncodedPathSegment("v1")
                 .addEncodedPathSegment(ARTICLE_PATH)
@@ -96,7 +96,9 @@ public class DataRetriever implements Callback  {
 
     @Override
     public void onFailure(Call call, IOException e) {
-        callerHandler.onDataRetrieveFailed(e);
+        if(!e.getMessage().toLowerCase().contains("canceled") && !e.getMessage().toLowerCase().contains("socket closed")) {
+            callerHandler.onDataRetrieveFailed(e);
+        }
     }
 
     @Override
